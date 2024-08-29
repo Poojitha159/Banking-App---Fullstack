@@ -95,22 +95,53 @@ const UserDashboard = () => {
     fetchCustomerData();
   }, [customerId, authToken]);
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      if (!showPassbook) return;
+  // useEffect(() => {
+  //   const fetchTransactions = async () => {
+  //     if (!showPassbook) return;
 
-      try {
-        const response = await axios.get(`http://localhost:8080/api/customers/${customerId}/passbook`, {
-          headers: { Authorization: `Bearer ${authToken}` }
-        });
-        setTransactions(response.data.content);
-      } catch (error) {
-        console.error('Error fetching transactions:', error);
+  //     try {
+  //       const response = await axios.get(`http://localhost:8080/api/customers/${customerId}/passbook`, {
+  //         headers: { Authorization: `Bearer ${authToken}` }
+  //       });
+  //       setTransactions(response.data.content);
+  //     } catch (error) {
+  //       console.error('Error fetching transactions:', error);
+  //     }
+  //   };
+
+  //   fetchTransactions();
+  // }, [showPassbook, customerId, authToken]);
+
+
+  const fetchTransactions = async (page, start, end) => {
+    if (!showPassbook) return;
+
+
+
+    try {
+
+      const formattedStartDate=start ? new Date(start).toISOString().split('T')[0]:'';
+      const formattedEndDate=end ? new Date(end).toISOString().split('T')[0]:'';
+
+
+      let url =`http://localhost:8080/api/customers/${customerId}/passbook?page=${page - 1}`;
+      if (formattedStartDate && formattedEndDate) {
+        url +=` &startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
       }
-    };
 
-    fetchTransactions();
-  }, [showPassbook, customerId, authToken]);
+      const response = await axios.get(url, {
+        headers: { Authorization: `Bearer ${authToken} `}
+      });
+      setTransactions(response.data.content);
+      setTotalPages(response.data.totalPages || 1);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions(currentPage, startDate, endDate);
+  }, [showPassbook, currentPage, startDate, endDate]);
 
   
 
@@ -143,6 +174,7 @@ const UserDashboard = () => {
     setStartDate(start || '');
     setEndDate(end || '');
     setCurrentPage(1); // Reset to the first page when date range changes
+    fetchTransactions(1, start, end);
   };
 
   useEffect(() => {
@@ -169,7 +201,7 @@ const UserDashboard = () => {
       <ul>
         {accountNumbers.map((account) => (
           <li key={account.accountId}>Account Number: {account.accountNumber}, Account ID: {account.accountId},
-          Balance: ${accountBalances[account.accountId]?.toFixed(2) || 'Loading...'}
+          {/* Balance: ${accountBalances[account.accountId]?.toFixed(2) || 'Loading...'} */}
           </li>
         ))}
       </ul>
@@ -251,3 +283,4 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+

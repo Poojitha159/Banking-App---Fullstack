@@ -3,7 +3,7 @@ import React  from 'react';
 import { useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import './AdminDashboard.css'; // Import your CSS file
+import './AdminDashboard.css'; 
 import { verifyAdmin } from '../../services/service';
 import { notify } from '../../../utils/GlobalToast';
 

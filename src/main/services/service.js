@@ -1,27 +1,47 @@
 
 import axios from "axios";
+import { handleApiError } from "../../utils/Errors/HandleApiError";
 
-export const getCustomerById=async(customerId) => {
-    let accessToken=localStorage.getItem("authToken");
-    try{
-        const response=await axios.get(
-            `http://localhost:8080/api/accounts/${customerId}`,
-    {
-        headers:{
-            Authorization:`Bearer ${accessToken}`,
-        },
-    }
+// export const getCustomerById=async(customerId) => {
+//     let accessToken=localStorage.getItem("authToken");
+//     try{
+//         const response=await axios.get(
+//             `http://localhost:8080/api/accounts/${customerId}`,
+//     {
+//         headers:{
+//             Authorization:`Bearer ${accessToken}`,
+//         },
+//     }
 
-        );
-console.log(response.data);
-return response.data;
-    }
-    catch(error){
-        console.error("no customer found");
-        throw error;
-    }
+//         );
+// console.log(response.data);
+// return response.data;
+//     }
+//     catch(error){
+//         console.error("no customer found");
+//         throw error;
+//     }
+// };
+
+export const getCustomerById = async (customerId) => {
+  const accessToken = localStorage.getItem("authToken");
+  try {
+      const response = await axios.get(
+          `http://localhost:8080/api/accounts/${customerId}`,
+          {
+              headers: {
+                  Authorization: `Bearer ${accessToken}`,
+              },
+          }
+      );
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+      const errorMessage = handleApiError(error);
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+  }
 };
-
 
 
 
@@ -59,7 +79,6 @@ export const verifyAdmin = async () => {
       },
     });
     
-    
     return response.data; // Should return a boolean or some other verification result
   } catch (error) {
     console.error('Error verifying user:', error);
@@ -89,7 +108,12 @@ export const verifyUser = async () => {
 
 export const createAccount = async ({ accountDTO, customerId }) => {
   const token = localStorage.getItem('authToken');
+  if(!customerId){
+    // throw new error('customer id is missing');
+    console.log('customerid is missing');
+  }
   try {
+    console.log('creating account');
     const response = await axios.post(
       `http://localhost:8080/api/accounts/${customerId}`,
       accountDTO,
@@ -100,6 +124,7 @@ export const createAccount = async ({ accountDTO, customerId }) => {
         },
       }
     );
+    console.log('account creation',response);
     return response.data;
   } catch (error) {
     console.error('Error creating account:', error);
@@ -149,14 +174,30 @@ export const verifyCustomerFiles = async (verificationDTO) => {
     throw error;
   }
 };
+//corect one====
+// export const fetchAccountsByCustomerId = async (customerId) => {
+//   const token = localStorage.getItem("authToken");
+//   const response = await axios.get(`http://localhost:8080/api/accounts/customer/${customerId}`, {
+//     headers: { Authorization: `Bearer ${token}` }
+//   });
+//   return response.data.content;
+// };
+//== to here
 
 export const fetchAccountsByCustomerId = async (customerId) => {
-  const token = localStorage.getItem("authToken");
-  const response = await axios.get(`http://localhost:8080/api/accounts/customer/${customerId}`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.content;
+  const token = localStorage.getItem('authToken');
+  try {
+    const response = await axios.get(`http://localhost:8080/api/accounts/customer/${customerId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    console.log('API Response:', response.data); // Debug: Check the API response
+    return response.data.content; // Ensure this is the correct path to the accounts
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    throw error; // Propagate the error
+  }
 };
+
 export const fetchCustomers=async () =>{
   const token = localStorage.getItem("authToken");
   const response=await axios.get("http://localhost:8080/api/accounts",{
@@ -167,10 +208,18 @@ export const fetchCustomers=async () =>{
 }
 export const deactivateCustomer=async(customerId)=>{
   const token = localStorage.getItem("authToken");
-  const response=await axios.delete(`http://localhost:8080/api/accounts/deactivateCustomerAndAccounts/${customerId}`,null,{
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data.content;
+  try {
+    const response = await axios.delete(
+      `http://localhost:8080/api/accounts/deactivateCustomerAndAccounts/${customerId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    return response.data.content; // Ensure this matches the actual response structure
+  } catch (error) {
+    console.error('Error deactivating customer and accounts:', error);
+    throw error; // Rethrow error to be caught in the calling function
+  }
 };
 
 
