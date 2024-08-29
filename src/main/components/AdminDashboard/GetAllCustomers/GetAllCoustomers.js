@@ -57,6 +57,7 @@ const GetAllCoustomers = () => {
       );
       
     } catch (err) {
+      notify('failed to update','error');
       console.error(err);
     }
   };
@@ -73,19 +74,7 @@ const GetAllCoustomers = () => {
       console.error(err);
     }
   };
-  // Handle create account
-// const handleCreateAccount = async (accountDTO, customerId) => {
-//   try {
-//     await createAccount(accountDTO, customerId); // Ensure accountDTO and customerId are passed correctly
-//     // Refresh accounts after creation
-//     const updatedAccounts = await handleViewAccounts(customerId);
-//     notify('Account Created Successfully','success');
-//     // No need to handle success notification here, as it's handled in handleViewAccounts
-//   } catch (err) {
-//     notify('Failed to create Account','error');
-//     console.error(err);
-//   }
-// };
+ 
 
 
   // Handle delete account
@@ -94,7 +83,6 @@ const GetAllCoustomers = () => {
       await deleteAccount(accountId);
       //showToastSuccess('Account Deleted Successfully');
     } catch (err) {
-     // showToastError('Failed to delete Account');
       console.error(err);
     }
   };
@@ -124,11 +112,9 @@ const GetAllCoustomers = () => {
   const handleViewAccounts = async (customerId) => {
     try {
       const accounts = await fetchAccountsByCustomerId(customerId);
-      // Handle or display accounts as needed
       console.log(accounts);
       return accounts;
     } catch (err) {
-     // showToastError('Failed to fetch accounts');
       console.error(err);
     }
   };

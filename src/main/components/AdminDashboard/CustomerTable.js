@@ -133,10 +133,7 @@ const CustomerTable = ({ customers = [], onSave, onCreateAccount, onDeleteAccoun
     setNewAccount((prevAccount) => ({ ...prevAccount, [name]: value }));
   };
 
-  // const handleAccountCreation = () => {
-  //   onCreateAccount(newAccount, currentCustomerId);
-  //   handleCancelCreateAccount();
-  // };
+  
   const handleAccountCreation = () => {
     if (!newAccount.accountNumber || !newAccount.balance || !newAccount.bankId) {
       notify('All fields are required','error');
