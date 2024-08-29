@@ -7,7 +7,7 @@ import Pagination from '../SharedComponents/Pagination';
 import PageSize from '../SharedComponents/PageSize';
 import { showToastError, showToastSuccess } from '../../../utils/Helpers/Toast';
 import { EditCustomerModal, AccountsModal, CreateAccountModal } from './CustomerModals';
-import { notify } from '../../../utils/GlobalToast';
+import { notify } from '../../../utils/Helpers/GlobalToast';
 
 const CustomerTable = ({ customers = [], onSave, onCreateAccount, onDeleteAccount, onDeleteCustomer, onViewAccounts }) => {
   const [searchParams, setSearchParams] = useSearchParams();

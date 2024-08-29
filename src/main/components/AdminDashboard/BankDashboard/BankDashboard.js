@@ -4,7 +4,7 @@ import { Table, Button, Modal, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { verifyAdmin ,fetchBanks, deleteBank, addBank, updateBank } from '../../../services/service';
-import { notify } from '../../../../utils/GlobalToast';
+import { notify } from '../../../../utils/Helpers/GlobalToast';
 import './BankDashboard.css'
 import { AddBankModal ,UpdateBankModal} from './BankModal';
 

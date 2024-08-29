@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'; 
 import { useNavigate } from 'react-router-dom'; // For navigation
 import axios from 'axios';
-import { notify } from '../../../../utils/GlobalToast';
+import { notify } from '../../../../utils/Helpers/GlobalToast';
 import './GetAllCustomers.css';
 
 import CustomerTable from '../CustomerTable';

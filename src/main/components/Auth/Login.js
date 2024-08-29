@@ -4,9 +4,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { notify } from '../../../utils/GlobalToast';
+import { notify } from '../../../utils/Helpers/GlobalToast';
 //const navigate=useNavigate();
 import { handleValidationError } from '../../../utils/Errors/HandleApiError';
+import { verifyAdmin,verifyUser } from '../../services/service';
 
 const Login = () => {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -25,88 +26,42 @@ const Login = () => {
       return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', { usernameOrEmail, password });
-      
-      
 
-      localStorage.setItem('authToken',response.data.accessToken);
-      localStorage.setItem('userId',response.data.user_id);
-      localStorage.setItem('userRole',response.data.role);
-      localStorage.setItem('customerId',response.data.customerId);
-      
+  try {
+    const response = await axios.post('http://localhost:8080/api/auth/login', { usernameOrEmail, password });
+    
+    localStorage.setItem('authToken', response.data.accessToken);
+    localStorage.setItem('userId', response.data.user_id);
+    localStorage.setItem('userRole', response.data.role);
+    localStorage.setItem('customerId', response.data.customerId);
+    
+    const getToken = localStorage.getItem('authToken');
 
-      if(localStorage.getItem('userRole')=="ROLE_ADMIN"){
-        if(verifyAdmin){
-        
-        console.log("admin board")
+    if(localStorage.getItem('userRole')=="ROLE_ADMIN"){
+      if(verifyAdmin){
+        console.log("admin board");
         navigate('/admindashboard');
-        notify('Loged successfully!', 'success'); 
-        
-      }
-      else{
-        navigate('/login')
-      }
-      }
-      if(localStorage.getItem('userRole')=="ROLE_USER"){
-      if(verifyUser){
-        console.log("USER board")
-          navigate('/userdashboard')
-          notify('Loged successfully!', 'success'); 
-
-      }
-      else{
-        navigate('/login')
+        notify('Logged in successfully!', 'success');
+      } else {
+        navigate('/login');
       }
     }
-      
 
-    } catch (error) {
-      //navigate('/registration');
-      console.error('Error logging in:', error);
-      notify('User Not registered Kindly Register!', 'error');
-
+    if(localStorage.getItem('userRole')=="ROLE_USER"){
+           if(verifyUser){
+        console.log("USER board");
+        navigate('/userdashboard');
+        notify('Logged in successfully!', 'success');
+      } else {
+        notify('veriofication Not DONE check!','error');
+        navigate('/login');
+      }
     }
-  };
-
-    const verifyAdmin = async () => {
-      const userId = localStorage.getItem('userId');
-      const gettoken = localStorage.getItem('authToken');
-      
-      try {
-        const response = await axios.get(`http://localhost:8080/api/auth/verify-admin`,null, {
-          params: {
-            token: gettoken,
-          },
-        });
-        
-        
-        return response.data; // Should return a boolean or some other verification result
-      } catch (error) {
-        console.error('Error verifying user:', error);
-        return false;
-      }
-    };
-
-    const verifyUser = async () => {
-      const userId = localStorage.getItem('userId');
-      const gettoken = localStorage.getItem('authToken');
-
-
-      try {
-        const response = await axios.get(`http://localhost:8080/api/auth/verify-user`,null, {
-          params: {
-            token: gettoken,
-          },
-        });
-        return response.data; // Should return a boolean or some other verification result
-      } catch (error) {
-        console.error('Error verifying user:', error);
-        return false;
-      }
-      
-    };
-
+  } catch (error) {
+    console.error('Error logging in:', error);
+    notify('User Not registered. Kindly Register!', 'error');
+  }
+};
     const handleregister = () => {
       navigate('/registration');
     }

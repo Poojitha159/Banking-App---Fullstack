@@ -5,7 +5,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css'; 
 import { verifyAdmin } from '../../services/service';
-import { notify } from '../../../utils/GlobalToast';
+// import { notify } from '../../../utils/GlobalToast';
+import { notify } from '../../../utils/Helpers/GlobalToast';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();

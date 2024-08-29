@@ -310,9 +310,61 @@ export const fetchCustomerData = async (customerId, authToken) => {
   return { customerDetails: customerResponse.data, accountNumbers: accountResponse.data };
 };
 
-export const fetchTransactions = async (customerId, authToken) => {
-  const response = await axios.get(`${API_BASE_URLL}/customers/${customerId}/passbook`, {
-    headers: { Authorization: `Bearer ${authToken}` },
-  });
-  return response.data.content;
+// export const fetchTransactions = async (customerId, authToken) => {
+//   const response = await axios.get(`${API_BASE_URLL}/customers/${customerId}/passbook`, {
+//     headers: { Authorization: `Bearer ${authToken}` },
+//   });
+//   return response.data.content;
+// };
+
+
+const API_URL = 'http://localhost:8080/api/transactions';
+
+export const fetchTransactions = async (page, size, type = '', value = '', startDate = '', endDate = '', token) => {
+  try {
+    let url = `${API_URL}/all`;
+    let params = { page: page - 1, size: size };
+
+    if (type === 'transactionId') {
+      url = `${API_URL}/${value}`;
+      params = {}; // No pagination for single transaction
+    } else if (type === 'dateRange') {
+      url = `${API_URL}/byDateRange`;
+      params = { page: page - 1, size: size, startDate, endDate }; // Include pagination
+    } else if (type) {
+      params[type] = value;
+    }
+
+    const response = await axios.get(url, {
+      params: params,
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching transactions:', error);
+    throw error; // Rethrow to handle in component
+  }
 };
+
+// for registration
+
+const API_BASE_URL_REGISTER = 'http://localhost:8080/api/auth';
+
+export const registerUser = async (formData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL_REGISTER}/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
+
+
+

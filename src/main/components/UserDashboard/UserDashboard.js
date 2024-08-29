@@ -10,7 +10,8 @@ import PassbookTable from './PassbookTable';
 import './Userdashboard.css';
 import { useNavigate } from 'react-router-dom';
 import { verifyUser } from '../../services/service';
-import { notify } from '../../../utils/GlobalToast';
+// import { notify } from '../../../utils/GlobalToast';
+import { notify } from '../../../utils/Helpers/GlobalToast';
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -283,4 +284,5 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+
 

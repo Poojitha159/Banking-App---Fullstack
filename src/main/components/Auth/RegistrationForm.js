@@ -1,11 +1,13 @@
+
+
 import React, { useState } from 'react';
-import { Form, Button, Col, Alert } from 'react-bootstrap';
-import axios from 'axios';
-import { Row } from 'react-bootstrap';
+import { Form, Button, Col, Alert, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../services/service'; 
 import './Registration.css';
+
 const RegistrationForm = () => {
-    const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -27,10 +29,6 @@ const RegistrationForm = () => {
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError(null);
-  //   setSuccess(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -39,10 +37,10 @@ const RegistrationForm = () => {
     // Check if any field is left empty
     const requiredFields = ['firstName', 'lastName', 'username', 'email', 'password'];
     for (const field of requiredFields) {
-        if (!formData[field]) {
-            setError(`${field.replace(/([A-Z])/g, ' $1')} is required!`);
-            return;
-        }
+      if (!formData[field]) {
+        setError(`${field.replace(/([A-Z])/g, ' $1')} is required!`);
+        return;
+      }
     }
 
     // Validations
@@ -60,19 +58,14 @@ const RegistrationForm = () => {
 
     const formPayload = new FormData();
     Object.keys(formData).forEach((key) => {
-        if (formData[key] !== null && formData[key] !== undefined) {
-            formPayload.append(key, formData[key]);
-        }
-
+      if (formData[key] !== null && formData[key] !== undefined) {
+        formPayload.append(key, formData[key]);
+      }
     });
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/register', formPayload, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setSuccess(response.data);
+      const response = await registerUser(formPayload);
+      setSuccess(response);
       setFormData({
         firstName: '',
         lastName: '',
@@ -84,19 +77,18 @@ const RegistrationForm = () => {
         file2: null,
       });
     } catch (err) {
-        // Check for specific error messages from the backend
-        if (err.response && err.response.data) {
-          setError(err.response.data || 'Registration failed!');
-        } else {
-          setError('Registration failed!');
-        }
+      // Check for specific error messages from the backend
+      if (err.response && err.response.data) {
+        setError(err.response.data || 'Registration failed!');
+      } else {
+        setError('Registration failed!');
       }
+    }
   };
 
   const handleLogin = () => {
     navigate(-1);
-  }
-
+  };
 
   return (
     <div className="container">
@@ -193,17 +185,19 @@ const RegistrationForm = () => {
           </>
         )}
 
-<div className="button-container">
-  <Button variant="primary" type="submit">
-    Register
-  </Button>
-  <Button variant="primary" onClick={handleLogin} style={{ marginLeft: '10px' }}>
-    Back to Login
-  </Button>
-</div>
+        <div className="button-container">
+          <Button variant="primary" type="submit">
+            Register
+          </Button>
+          <Button variant="primary" onClick={handleLogin} style={{ marginLeft: '10px' }}>
+            Back to Login
+          </Button>
+        </div>
       </Form>
     </div>
   );
 };
 
 export default RegistrationForm;
+
+

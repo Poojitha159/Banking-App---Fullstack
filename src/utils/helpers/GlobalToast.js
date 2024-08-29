@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const GlobalToast = () => {
-    return <ToastContainer />;
+  //  return <ToastContainer />;
 };
 
 export const notify = (message, type = "info") => {
